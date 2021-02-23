@@ -2,7 +2,7 @@ RewriteEngine on
 # URL AMIGABLE
 	RewriteCond %{REQUEST_FILENAME} !-d
 	RewriteCond %{REQUEST_FILENAME} !-f
-	RewriteRule ^([a-zA-Z0-9/_]+)$ App/index.php?vista=$1
+	RewriteRule ^([a-zA-Z0-9/_]+)$ app/index.php
 # URL AMIGABLE
 Options -Indexes
 <Files .env>
