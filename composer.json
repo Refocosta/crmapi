@@ -1,0 +1,12 @@
+{
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/App/",
+            "Config\\": "app/Config/",
+            "Core\\": "app/Core/"
+        }
+    },
+    "require": {
+        "slim/slim": "3.*"
+    }
+}
