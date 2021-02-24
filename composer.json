@@ -8,6 +8,7 @@
     },
     "require": {
         "slim/slim": "3.*",
-        "illuminate/database": "^8.29"
+        "illuminate/database": "^8.29",
+        "vlucas/phpdotenv": "^5.3"
     }
 }

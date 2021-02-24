@@ -30,7 +30,7 @@ abstract class Connections
         $this->connection->bootEloquent();
     }
 
-    abstract protected function DB();
+    abstract public function DB();
 
     public function __destruct()
     {

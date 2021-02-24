@@ -17,6 +17,7 @@ $app->group('/api/v1', function () use ($app) {
     });
 
     $app->get('/channels', '\App\Controllers\ChannelsController:index');
+    $app->post('/channels', '\App\Controllers\ChannelsController:store');
 
 });
 

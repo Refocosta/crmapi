@@ -2,7 +2,7 @@
 use Config\Connections;
 class Base extends Connections
 {
-    protected function DB(): \Illuminate\Database\Capsule\Manager
+    public function DB(): \Illuminate\Database\Capsule\Manager
     {
         return $this->connection;
     }
