@@ -1,9 +1,8 @@
 <?php namespace Config;
-use Config\Env;
-class System extends Env 
+final class System
 {
     public static function system(): bool
     {
-        return (self::env()['SIS_STATUS'] === 'true') ? true : false;
+        return ($_ENV['SIS_STATUS'] === 'true') ? true : false;
     }
 }

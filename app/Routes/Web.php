@@ -1,4 +1,6 @@
 <?php
+use Middlewares\KeyMiddleware;
+
 $app = new \Slim\App([
     'settings' => [
         'displayErrorDetails' => true
@@ -19,7 +21,7 @@ $app->group('/api/v1', function () use ($app) {
     $app->get('/channels', '\App\Controllers\ChannelsController:index');
     $app->post('/channels', '\App\Controllers\ChannelsController:store');
 
-});
+})->add(new KeyMiddleware());
 
 // DATA //
 $app->get('/tables', '\App\Controllers\TablesController:tables');

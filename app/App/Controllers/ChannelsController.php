@@ -18,11 +18,10 @@ class ChannelsController
 
     public function store(Request $request,  Response $response, array $args)
     {
-        $name = "MAIL";
-        $status = 1;
+        $post = $request->getParsedBody();
         Channel::insert([
-            'Name' => $name,
-            'Status' => $status,
+            'Name' => $post['Name'],
+            'Status' => $post['Status'],
             "created_at" => Carbon::now('America/Bogota'),
             "updated_at" => Carbon::now('America/Bogota')
         ]);
