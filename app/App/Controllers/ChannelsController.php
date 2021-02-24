@@ -1,9 +1,11 @@
 <?php namespace App\Controllers;
+use Config\Connections;
+use Illuminate\Database\Capsule\Manager;
 use Psr\Http\Message\RequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
 
-class ChannelsController
+class ChannelsController extends Connections
 {
     public function index(Request $request,  Response $response, array $args): Response
     {

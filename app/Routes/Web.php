@@ -1,5 +1,9 @@
 <?php
-$app = new \Slim\App();
+$app = new \Slim\App([
+    'settings' => [
+        'displayErrorDetails' => true
+    ]
+]);
 
 // REDIRECCION DE LA RAIZ / //
 $app->redirect('/', '/api/v1');
@@ -15,6 +19,9 @@ $app->group('/api/v1', function () use ($app) {
     $app->get('/channels', '\App\Controllers\ChannelsController:index');
 
 });
+
+// DATA //
+$app->get('/tables', '\App\Controllers\TablesController:tables');
 
 // START AP //
 $app->run();
