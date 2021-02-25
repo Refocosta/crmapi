@@ -1,11 +1,16 @@
 <?php namespace App\Controllers;
 use Psr\Http\Message\RequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
-use App\Models\Channel;
 use Carbon\Carbon;
+use Respect\Validation\Validator as v;
+use Exceptions\ChannelsException;
+use App\Models\Channel;
 
 class ChannelsController
 {
+
+    use \Core\Validator;
+
     public function index(Request $request,  Response $response, array $args): Response
     {
         $data = [
@@ -19,6 +24,16 @@ class ChannelsController
     public function store(Request $request,  Response $response, array $args)
     {
         $post = $request->getParsedBody();
+
+        self::validateRequest($post, [
+            'Name'   => v::notEmpty()->stringType()->length(1, 45),
+            'Status' => v::notEmpty()->intType()->length(1, 1)
+        ]);
+
+        if (self::failded()) {
+            throw new ChannelsException('Request enviado incorrecto', 400);
+        }
+
         Channel::insert([
             'Name' => $post['Name'],
             'Status' => $post['Status'],

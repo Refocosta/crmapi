@@ -1,5 +1,5 @@
 <?php namespace Config;
-final class Key
+abstract class Key
 {
     public static function key(): string
     {

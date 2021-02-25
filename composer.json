@@ -4,12 +4,14 @@
             "App\\": "app/App/",
             "Config\\": "app/Config/",
             "Core\\": "app/Core/",
-            "Middlewares\\": "app/Middlewares/"
+            "Middlewares\\": "app/Middlewares/",
+            "Exceptions\\": "app/Exceptions/"
         }
     },
     "require": {
         "slim/slim": "3.*",
         "illuminate/database": "^8.29",
-        "vlucas/phpdotenv": "^5.3"
+        "vlucas/phpdotenv": "^5.3",
+        "respect/validation": "^2.2"
     }
 }
