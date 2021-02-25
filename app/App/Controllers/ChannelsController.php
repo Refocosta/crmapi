@@ -1,15 +1,20 @@
 <?php namespace App\Controllers;
-use Psr\Http\Message\RequestInterface as Request;
-use Psr\Http\Message\ResponseInterface as Response;
-use Carbon\Carbon;
+use App\Controllers\BaseController;
+use Slim\Http\Request;
+use Slim\Http\Response;
 use Respect\Validation\Validator as v;
+use Carbon\Carbon;
 use Exceptions\ChannelsException;
 use App\Models\Channel;
-
-class ChannelsController
+class ChannelsController extends BaseController
 {
 
-    use \Core\Validator;
+    private $channel;
+
+    public function __construct()
+    {
+        $this->channel = new Channel();
+    }
 
     public function index(Request $request,  Response $response, array $args): Response
     {
@@ -34,11 +39,20 @@ class ChannelsController
             throw new ChannelsException('Request enviado incorrecto', 400);
         }
 
-        Channel::insert([
-            'Name' => $post['Name'],
-            'Status' => $post['Status'],
-            "created_at" => Carbon::now('America/Bogota'),
-            "updated_at" => Carbon::now('America/Bogota')
-        ]);
+        $this->channel->Name = $post['Name'];
+        $this->channel->Status = $post['Status'];
+        $this->channel->created_at = Carbon::now('America/Bogota');
+        $this->channel->updated_at = Carbon::now('America/Bogota');
+        $responseInsert = $this->channel->save();
+        if (!$responseInsert) {
+            throw new ChannelsException('Ha ocurrido un error', 500);
+        }
+
+        return $this->response($this->channel->id, 200, $response);
+    }
+
+    public function __destruct()
+    {
+        $this->channel = null;
     }
 }
