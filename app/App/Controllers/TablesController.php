@@ -4,6 +4,7 @@ class TablesController extends Base
 {
     public function tables()
     {
+        $this->DB()::schema('crm')->dropIfExists('Channels');
         $this->DB()::schema('crm')->create('Channels', function ($table) {
             $table->increments('Id');
             $table->string('Name');

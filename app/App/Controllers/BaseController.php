@@ -4,7 +4,7 @@ abstract class BaseController
 {
     use \Core\Validator;
 
-    protected function response(array|string|int $data, int $status, Response $response): Response
+    protected function response($data, int $status, Response $response): Response
     {
         $result = [
             "status" => $status,

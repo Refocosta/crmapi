@@ -8,6 +8,8 @@ class Channel extends Model
         (new Base());
     }
 
+    protected $primaryKey = 'Id';
+
     protected $connection = "crm";
 
     protected $table = "Channels";

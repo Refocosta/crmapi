@@ -18,7 +18,6 @@ $app->redirect('/api', '/api/v1');
 
 // RUTAS //
 $app->group('/api/v1', function () use ($app) {
-
     $app->get('', function () {
         echo json_encode([
             "crm" => "NATIVA CRM API",
@@ -26,10 +25,14 @@ $app->group('/api/v1', function () use ($app) {
             "version" => "1.0.1"
         ]);
     });
-
-    $app->get('/channels', '\App\Controllers\ChannelsController:index');
-    $app->post('/channels', '\App\Controllers\ChannelsController:store');
-
+    // CHANNELS //
+    $app->group('/channels', function () use ($app) {
+        $app->get('', '\App\Controllers\ChannelsController:index');
+        $app->post('', '\App\Controllers\ChannelsController:store');
+        $app->get('/{id}', '\App\Controllers\ChannelsController:show');
+        $app->put('/{id}', '\App\Controllers\ChannelsController:update');
+        $app->delete('/{id}', '\App\Controllers\ChannelsController:destroy');
+    });
 })->add(new KeyMiddleware());
 
 // DATA //
