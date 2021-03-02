@@ -3,7 +3,6 @@ use App\Controllers\BaseController;
 use Slim\Http\Request;
 use Slim\Http\Response;
 use Respect\Validation\Validator as v;
-use Carbon\Carbon;
 use Exceptions\ChannelsException;
 use App\Models\Channel;
 class ChannelsController extends BaseController
@@ -17,7 +16,7 @@ class ChannelsController extends BaseController
 
     public function index(Request $request,  Response $response, array $args): Response
     {
-        return $this->response($this->channel->all(), 200, $response);
+        return $this->response($this->channel->where('Status', 1)->get(), 200, $response);
     }
 
     public function store(Request $request,  Response $response, array $args): Response
@@ -33,8 +32,6 @@ class ChannelsController extends BaseController
 
         $this->channel->Name = $post['Name'];
         $this->channel->Status = $post['Status'];
-        $this->channel->created_at = Carbon::now('America/Bogota');
-        $this->channel->updated_at = Carbon::now('America/Bogota');
         $responseInsert = $this->channel->save();
         if (!$responseInsert) {
             throw new ChannelsException('Ha ocurrido un error', 500);
@@ -50,7 +47,13 @@ class ChannelsController extends BaseController
     public function show(Request $request, Response $response, array $args): Response
     {
         $id = $args['id'];
-        return $this->response($this->channel->find($id), 200, $response);
+        $record = $this->channel->where('Status', 1)->find($id);
+
+        if ($record === null) {
+            throw new ChannelsException('El registro no existe', 404);
+        }
+
+        return $this->response($record, 200, $response);
     }
 
     public function update(Request $request, Response $response, array $args): Response
@@ -66,6 +69,11 @@ class ChannelsController extends BaseController
         }
 
         $record = $this->channel->find($id);
+
+        if ($record === null) {
+            throw new ChannelsException('El registro no existe', 404);
+        }
+
         $record->Name = (!empty($post['Name'])) ? $post['Name'] : $record->Name;
         $record->Status = (!empty($post['Status'])) ? $post['Status'] : $record->Status;
         $record->updated_at = Carbon::now('America/Bogota');
@@ -78,15 +86,24 @@ class ChannelsController extends BaseController
 
     }
 
-    public function delete()
-    {
-        
-    }
-
-    public function destroy(Request $request, Response $response, $args): Response
+    public function delete(Request $request, Response $response, array $args)
     {
         $id = $args['id'];
         $record = $this->channel->find($id);
+        $record->Status = 0;
+        $record->save();
+        return $this->response('OK', 200, $response);
+    }
+
+    public function destroy(Request $request, Response $response, array $args): Response
+    {
+        $id = $args['id'];
+        $record = $this->channel->find($id);
+
+        if ($record === null) {
+            throw new ChannelsException('El registro no existe', 404);
+        }
+
         $record->delete();
         return $this->response('OK ' . $id, 200, $response);
     }

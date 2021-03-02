@@ -32,11 +32,18 @@ $app->group('/api/v1', function () use ($app) {
         $app->get('/{id}', '\App\Controllers\ChannelsController:show');
         $app->put('/{id}', '\App\Controllers\ChannelsController:update');
         $app->delete('/{id}', '\App\Controllers\ChannelsController:destroy');
+        $app->patch('/{id}', '\App\Controllers\ChannelsController:delete');
+    });
+    // CONTACTS //
+    $app->group('/contacts', function () use ($app) {
+        $app->get('', '\App\Controllers\ContactsController:index');
+        $app->post('', '\App\Controllers\ContactsController:store');
     });
 })->add(new KeyMiddleware());
 
 // DATA //
 $app->get('/tables', '\App\Controllers\TablesController:tables')->add(new AtdbMiddleware());
+$app->get('/down', '\App\Controllers\TablesController:down')->add(new AtdbMiddleware());
 
 // START AP //
 $app->run();

@@ -7,11 +7,12 @@ class HandlerException extends \Slim\Handlers\Error
     public function __invoke(Request $request, Response $response, \Exception $exception)
     {
         $status = $exception->getCode();
-        $class = new \ReflectionClass(get_class($exception));
+        $classTemporally = new \ReflectionClass(get_class($exception));
+        $class = explode('\\', $classTemporally->getName());
         $data = [
             "status" => $status,
             "error"  => true,
-            "class"  => $class->getName(),
+            "class"  => $class[1],
             "message"=> $exception->getMessage()
         ];
         $body = json_encode($data);
