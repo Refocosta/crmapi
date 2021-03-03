@@ -38,6 +38,10 @@ $app->group('/api/v1', function () use ($app) {
     $app->group('/contacts', function () use ($app) {
         $app->get('', '\App\Controllers\ContactsController:index');
         $app->post('', '\App\Controllers\ContactsController:store');
+        $app->get('/{id}', '\App\Controllers\ContactsController:show');
+        $app->put('/{id}', '\App\Controllers\ContactsController:update');
+        $app->delete('/{id}', '\App\Controllers\ContactsController:destroy');
+        $app->patch('/{id}', '\App\Controllers\ContactsController:delete');
     });
 })->add(new KeyMiddleware());
 

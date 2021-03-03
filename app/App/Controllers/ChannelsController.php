@@ -3,6 +3,7 @@ use App\Controllers\BaseController;
 use Slim\Http\Request;
 use Slim\Http\Response;
 use Respect\Validation\Validator as v;
+use Carbon\Carbon;
 use Exceptions\ChannelsException;
 use App\Models\Channel;
 class ChannelsController extends BaseController
@@ -86,13 +87,13 @@ class ChannelsController extends BaseController
 
     }
 
-    public function delete(Request $request, Response $response, array $args)
+    public function delete(Request $request, Response $response, array $args): Response
     {
         $id = $args['id'];
         $record = $this->channel->find($id);
         $record->Status = 0;
         $record->save();
-        return $this->response('OK', 200, $response);
+        return $this->response('OK ' . $id, 200, $response);
     }
 
     public function destroy(Request $request, Response $response, array $args): Response

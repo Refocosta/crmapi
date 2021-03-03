@@ -9,7 +9,7 @@ final class TablesController extends Base
             // CONTACTS  //
             $this->DB()::schema('crm')->create('Contacts', function ($table) {
                 $table->increments('Id');
-                $table->string('Name', 45);
+                $table->string('Name', 55);
                 $table->string('Cellphone', 15);
                 $table->string('Email', 125);
                 $table->text('Petition');
