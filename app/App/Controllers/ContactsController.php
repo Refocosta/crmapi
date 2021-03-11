@@ -46,7 +46,7 @@ class ContactsController extends BaseController
         $this->contact->Petition = $post['Petition'];
         $this->contact->Status = $post['Status'];
         $responseInsert  = $this->contact->save();
-        $this->contactService->contactsWithChannels($post['ChannelId'], $this->contact->Id);
+        $this->contactService->storeContactsWithChannels($post['ChannelId'], $this->contact->Id);
 
         if (!$responseInsert) {
             throw new ContactsException('Ha ocurrido un error', 500);
@@ -81,6 +81,7 @@ class ContactsController extends BaseController
         $id = $args['id'];
         $post = $request->getParsedBody();
 
+        
         if (!$this->validate($post, [
             'Name'      => v::optional(v::notEmpty()->stringType()->length(1, 55)),
             'Cellphone' => v::optional(v::notEmpty()->stringType()->length(1, 15)),
@@ -92,7 +93,7 @@ class ContactsController extends BaseController
         }
 
         $record = $this->contact->find($id);
-
+        
         if ($record === null) {
             throw new ContactsException('El registro no existe', 404);
         }
@@ -104,9 +105,13 @@ class ContactsController extends BaseController
         $record->Status = $post['Status'];
         $record->updated_at = Carbon::now('America/Bogota');
         $record->save();
-        return $response;
-
-
+        $this->contactService->storeContactsWithChannels($post['ChannelId'], $record->Id);
+        $this->contactService->removeContactsWithChannels($post['ChannelIdDel'], $record->Id);
+        return $this->response([
+            "id"    => $record->Id,
+            "name"  => $record->Name,
+            "Status"=> $record->Status
+        ], 200, $response);
     }
 
     public function delete(Request $request, Response $response, array $args): Response

@@ -1,7 +1,7 @@
 <?php namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Core\Base;
-class Contact extends Model
+class TypeChannel extends Model
 {
     public function __construct()
     {
@@ -12,11 +12,10 @@ class Contact extends Model
 
     protected $connection = "crm";
 
-    protected $table = "Contacts";
+    protected $table = "TypesChannels";
 
     public function channels()
     {
-        return $this->belongsToMany(Channel::class, 'ContactsChannels', 'ContactsId', 'ChannelsId');
+        return $this->belongsTo(Channel::class, 'ChannelsId', 'Id');
     }
-
 }

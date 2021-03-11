@@ -43,6 +43,15 @@ $app->group('/api/v1', function () use ($app) {
         $app->delete('/{id}', '\App\Controllers\ContactsController:destroy');
         $app->patch('/{id}', '\App\Controllers\ContactsController:delete');
     });
+    // TYPES CHANNELS //
+    $app->group('/types-channels', function () use ($app) {
+        $app->get('', '\App\Controllers\TypesChannelsController:index');
+        $app->post('', '\App\Controllers\TypesChannelsController:store');
+        $app->get('/{id}', '\App\Controllers\TypesChannelsController:show');
+        $app->put('/{id}', '\App\Controllers\TypesChannelsController:update');
+        $app->delete('/{id}', 'App\Controllers\TypesChannelsController:destroy');
+        $app->patch('/{id}', '\App\Controllers\TypesChannelsController:delete');
+    });
 })->add(new KeyMiddleware());
 
 // DATA //
