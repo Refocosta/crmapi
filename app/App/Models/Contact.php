@@ -19,4 +19,9 @@ class Contact extends Model
         return $this->belongsToMany(Channel::class, 'ContactsChannels', 'ContactsId', 'ChannelsId');
     }
 
+    public function typesChannels()
+    {
+        return $this->belongsToMany(TypeChannel::class, 'ContactsTypesChannels', 'ContactsId', 'TypesChannelsId');
+    }
+
 }

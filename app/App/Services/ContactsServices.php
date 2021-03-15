@@ -25,4 +25,15 @@ class ContactsServices
         }
         return true;
     }
+
+    public function storeContactsWithTypesChannels(array $typeChannelId, int $contactId): ?bool
+    {
+        if (count($typeChannelId) > 0) {
+            $contact = Contact::find($contactId);
+            for ($i = 0; $i < count($typeChannelId); $i++) {
+                $responseAttach = $contact->typesChannels()->attach($typeChannelId[$i]);
+            }
+        }
+        return true;
+    }
 }

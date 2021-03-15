@@ -47,6 +47,7 @@ class ContactsController extends BaseController
         $this->contact->Status = $post['Status'];
         $responseInsert  = $this->contact->save();
         $this->contactService->storeContactsWithChannels($post['ChannelId'], $this->contact->Id);
+        $this->contactService->storeContactsWithTypesChannels($post['TypeChannelId'], $this->contact->Id);
 
         if (!$responseInsert) {
             throw new ContactsException('Ha ocurrido un error', 500);

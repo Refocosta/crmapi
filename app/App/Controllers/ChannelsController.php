@@ -17,7 +17,9 @@ class ChannelsController extends BaseController
 
     public function index(Request $request,  Response $response, array $args): Response
     {
-        return $this->response($this->channel->where('Status', 1)->get(), 200, $response);
+        return $this->response($this->channel->with(array('typesChannels' => function ($query){
+            return $query->where('Status', 1);
+        }))->where('Status', 1)->get(), 200, $response);
     }
 
     public function store(Request $request,  Response $response, array $args): Response

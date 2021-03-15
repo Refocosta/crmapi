@@ -52,6 +52,52 @@ final class TablesController extends Base
                     ->onUpdate('cascade')
                     ->onDelete('cascade');
             });
+            // CONTACTS TYPES CHANNELS //
+            $this->DB()::schema('crm')->create('ContactsTypesChannels', function ($table) {
+                $table->increments('Id');
+                $table->integer('ContactsId')->unsigned();
+                $table->integer('TypesChannelsId')->unsigned();
+                $table->foreign('ContactsId')
+                    ->references('Id')
+                    ->on('Contacts')
+                    ->onUpdate('cascade')
+                    ->onDelete('cascade');
+                $table->foreign('TypesChannelsId')
+                    ->references('Id')
+                    ->on('TypesChannels')
+                    ->onUpdate('cascade')
+                    ->onDelete('cascade');
+            });
+            $this->DB()::schema('crm')->create('TypesObservations', function ($table) {
+                $table->increments('Id');
+                $table->string('Name');
+                $table->tinyInteger('Status');
+                $table->timestamps();
+            });
+            $this->DB()::schema('crm')->create('Tracings', function ($table) {
+                $table->increments('Id');
+                $table->string('Observation');
+                $table->integer('TypesObservationsId');
+                $table->integer('ContactsId');
+                $table->integer('ChannelsId');
+                $table->integer('UsersId');
+                $table->timestamps();
+                $table->foreign('TypesObservationsId')
+                    ->references('Id')
+                    ->on('TypesObservations')
+                    ->onUpdate('cascade')
+                    ->onDelete('cascade');
+                $table->foreign('ContactsId')
+                    ->references('Id')
+                    ->on('Contacts')
+                    ->onUpdate('cascade')
+                    ->onDelete('cascade');
+                $table->foreign('ChannelsId')
+                    ->references('Id')
+                    ->on('Channels')
+                    ->onUpdate('cascade')
+                    ->onDelete('cascade');
+            });
         } catch (\Illuminate\Database\QueryException $e) {
             throw new QueryException($e->getMessage(), 500);
         }
@@ -61,9 +107,12 @@ final class TablesController extends Base
     {
         try {
             $this->DB()::schema('crm')->dropIfExists('ContactsChannels');
+            $this->DB()::schema('crm')->dropIfExists('ContactsTypesChannels');
+            $this->DB()::schema('crm')->dropIfExists('Tracings');
             $this->DB()::schema('crm')->dropIfExists('Contacts');
             $this->DB()::schema('crm')->dropIfExists('TypesChannels');
             $this->DB()::schema('crm')->dropIfExists('Channels');
+            $this->DB()::schema('crm')->dropIfExists('TypesObservations');
         } catch (\Illuminate\Database\QueryException $e) {
             throw new QueryException($e->getMessage(), 500);
         }

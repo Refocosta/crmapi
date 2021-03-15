@@ -51,7 +51,9 @@ class TypesChannelsController extends BaseController
     {
         $id = $args["id"];
         
-        $record = $this->typeChannel->where('Status', 1)->find($id);
+        $record = $this->typeChannel->with(array('channels' => function($query) {
+            $query->where('Status', 1);
+        }))->where('Status', 1)->find($id);
 
         if ($record === null) {
             throw new TypesChannelsException('El registro no existe', 404);
