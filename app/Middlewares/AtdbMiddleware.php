@@ -1,8 +1,7 @@
 <?php namespace Middlewares;
-use Psr\Http\Message\RequestInterface as Request;
-use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\{RequestInterface as Request, ResponseInterface as Response};
 use Config\Atdb;
-class AtdbMiddleware extends Atdb
+final class AtdbMiddleware extends Atdb
 {
     public function __invoke(Request $request, Response $response, $next): Response
     {

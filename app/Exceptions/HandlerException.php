@@ -1,7 +1,5 @@
 <?php namespace Exceptions;
-use Psr\Http\Message\RequestInterface as Request;
-use Psr\Http\Message\ResponseInterface as Response;
-
+use Psr\Http\Message\{RequestInterface as Request, ResponseInterface as Response};
 class HandlerException extends \Slim\Handlers\Error
 {
     public function __invoke(Request $request, Response $response, \Exception $exception)

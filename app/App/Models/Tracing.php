@@ -1,7 +1,7 @@
 <?php namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Core\Base;
-class Tracing extends Base
+class Tracing extends Model
 {
     public function __construct()
     {

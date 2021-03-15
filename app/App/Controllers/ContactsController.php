@@ -7,7 +7,6 @@ use Carbon\Carbon;
 use Exceptions\ContactsException;
 use App\Models\Contact;
 use App\Services\ContactsServices;
-
 class ContactsController extends BaseController
 {
 
@@ -48,6 +47,12 @@ class ContactsController extends BaseController
         $responseInsert  = $this->contact->save();
         $this->contactService->storeContactsWithChannels($post['ChannelId'], $this->contact->Id);
         $this->contactService->storeContactsWithTypesChannels($post['TypeChannelId'], $this->contact->Id);
+        /*$this->contactService->storeContactInTracing([
+            "TypesObservationsId" => 1,
+            "ContactsId" => $this->contact->Id,
+            "ChannelsId" => 1,
+            "UsersId" => 1
+        ]);*/
 
         if (!$responseInsert) {
             throw new ContactsException('Ha ocurrido un error', 500);

@@ -1,8 +1,16 @@
 <?php namespace App\Services;
 use App\Models\Channel;
 use App\Models\Contact;
+use App\Controllers\TracingsController;
 class ContactsServices
 {
+    private $tracingController;
+
+    public function __construct()
+    {
+        $this->tracingController = new TracingsController();
+    }
+
     public function storeContactsWithChannels(array $channelId, int $contactId): ?bool
     {
         if (count($channelId) > 0) {
@@ -35,5 +43,11 @@ class ContactsServices
             }
         }
         return true;
+    }
+
+    public function storeContactInTracing(array $array)
+    {
+        $this->tracingController->storeFromSystem($array);
+
     }
 }

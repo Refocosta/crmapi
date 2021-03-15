@@ -2,5 +2,4 @@
 use Exceptions\BaseException;
 final class QueryException extends BaseException
 {
-
 }

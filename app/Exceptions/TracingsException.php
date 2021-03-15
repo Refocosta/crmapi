@@ -1,5 +1,5 @@
 <?php namespace Exceptions;
 use Exceptions\BaseException;
-final class TracingException extends BaseException
+final class TracingsException extends BaseException
 {
 }
