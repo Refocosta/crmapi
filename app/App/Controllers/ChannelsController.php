@@ -1,7 +1,6 @@
 <?php namespace App\Controllers;
 use App\Controllers\BaseController;
-use Slim\Http\Request;
-use Slim\Http\Response;
+use Slim\Http\{Request, Response};
 use Respect\Validation\Validator as v;
 use Carbon\Carbon;
 use Exceptions\ChannelsException;
@@ -78,9 +77,14 @@ class ChannelsController extends BaseController
         }
 
         $record->Name = (!empty($post['Name'])) ? $post['Name'] : $record->Name;
-        $record->Status = (!empty($post['Status'])) ? $post['Status'] : $record->Status;
+        $record->Status = (!empty($post['Status'])) ? $post['Status'] : (int) $record->Status;
         $record->updated_at = Carbon::now('America/Bogota');
-        $record->save();
+        $responseUpdate = $record->save();
+
+        if (!$responseUpdate) {
+            throw new ChannelsException('Ha ocurrido un error', 500);
+        }
+
         return $this->response([
             "id"    => $record->Id,
             "name"  => $record->Name,
@@ -99,7 +103,12 @@ class ChannelsController extends BaseController
         }
 
         $record->Status = 0;
-        $record->save();
+        $responseDelete = $record->save();
+
+        if (!$responseDelete) {
+            throw new ChannelsException('Ha ocurrido un error', 500);
+        }
+
         return $this->response('OK ' . $id, 200, $response);
     }
 
@@ -112,21 +121,15 @@ class ChannelsController extends BaseController
             throw new ChannelsException('El registro no existe', 404);
         }
 
-        $record->delete();
+        $responseDestroy = $record->delete();
+
+        if (!$responseDestroy) {
+            throw new ChannelsException('Ha ocurrido un error', 500);
+        }
+
         return $this->response('OK ' . $id, 200, $response);
     }
-
-    //
-
-    private function validate(array $post, array $rules): bool
-    {
-        self::validateRequest($post, $rules);
-        if (self::failded()) {
-            return false;
-        }
-        return true;
-    }
-
+    
     public function __destruct()
     {
         $this->channel = null;

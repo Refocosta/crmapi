@@ -52,6 +52,15 @@ $app->group('/api/v1', function () use ($app) {
         $app->delete('/{id}', 'App\Controllers\TypesChannelsController:destroy');
         $app->patch('/{id}', '\App\Controllers\TypesChannelsController:delete');
     });
+    // TYPES OBSERVATIONS //
+    $app->group('/types-observations', function () use  ($app) {
+        $app->get('', '\App\Controllers\TypesObservationsController:index');
+        $app->post('', '\App\Controllers\TypesObservationsController:store');
+        $app->get('/{id}', '\App\Controllers\TypesObservationsController:show');
+        $app->put('/{id}', 'App\Controllers\TypesObservationsController:update');
+        $app->patch('/{id}', '\App\Controllers\TypesObservationsController:delete');
+        $app->delete('/{id}', '\App\Controllers\TypesObservationsController:destroy');
+    });
 })->add(new KeyMiddleware());
 
 // DATA //

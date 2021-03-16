@@ -1,14 +1,12 @@
 <?php namespace App\Controllers;
 use App\Controllers\BaseController;
-use Slim\Http\Request;
-use Slim\Http\Response;
+use Slim\Http\{Request, Response};
 use Respect\Validation\Validator as v;
 use Carbon\Carbon;
 use Exceptions\TypesChannelsException;
 use App\Models\TypeChannel;
 class TypesChannelsController extends BaseController
 {
-
     private $typeChannel;
 
     public function __construct()
@@ -30,7 +28,7 @@ class TypesChannelsController extends BaseController
             'ChannelsId' => v::notEmpty()->intType(),
             'Status'     => v::notEmpty()->intType()->length(1, 1)
         ])) {
-            throw new TypesChannelsException('Request enviado incorrecto', 400);
+            throw new TypesChannelsException('Verifica la información enviada', 400);
         }
         
         $this->typeChannel->Name = $post["Name"];
@@ -72,7 +70,7 @@ class TypesChannelsController extends BaseController
             'ChannelsId' => v::optional(v::intType()),
             'Status'     => v::optional(v::notEmpty()->intType()->length(1, 1))
         ])) {
-            throw new TypesChannelsException('Request enviado incorrecto', 400);
+            throw new TypesChannelsException('Verifica la información enviada', 400);
         }
 
         $record = $this->typeChannel->find($id);
@@ -85,7 +83,12 @@ class TypesChannelsController extends BaseController
         $record->ChannelsId = (!empty($post['ChannelsId'])) ? $post['ChannelsId'] : $record->ChannelsId;
         $record->Status = (!empty($post['Status'])) ? $post['Status'] : $record->Status;
         $record->updated_at = Carbon::now('America/Bogota');
-        $record->save();
+        $responseUpdate = $record->save();
+
+        if (!$responseUpdate) {
+            throw new TypesChannelsException('Ha ocurrido un error', 500);
+        }
+
         return $this->response([
             "id"    => $record->Id,
             "name"  => $record->Name,
@@ -103,7 +106,12 @@ class TypesChannelsController extends BaseController
         }
 
         $record->Status = 0;
-        $record->save();
+        $responseDelete = $record->save();
+        
+        if (!$responseDelete) {
+            throw new TypesChannelsException('Ha ocurrido un error', 500);
+        }
+
         return $this->response('OK ' . $id, 200, $response);
     }
 
@@ -116,19 +124,13 @@ class TypesChannelsController extends BaseController
             throw new TypesChannelsException('El registro no existe', 404);
         }
 
-        $record->delete();
-        return $this->response('OK ' . $id, 200, $response);
-    }
-
-    //
-
-    private function validate(array $post, array $rules): bool
-    {
-        self::validateRequest($post, $rules);
-        if (self::failded()) {
-            return false;
+        $responseDestroy = $record->delete();
+        
+        if (!$responseDestroy) {
+            throw new TypesChannelsException('Ha ocurrido un error', 500);
         }
-        return true;
+
+        return $this->response('OK ' . $id, 200, $response);
     }
 
     public function __destruct()

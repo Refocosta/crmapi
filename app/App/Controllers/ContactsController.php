@@ -1,7 +1,6 @@
 <?php namespace App\Controllers;
 use App\Controllers\BaseController;
-use Slim\Http\Request;
-use Slim\Http\Response;
+use Slim\Http\{Request, Response};
 use Respect\Validation\Validator as v;
 use Carbon\Carbon;
 use Exceptions\ContactsException;
@@ -45,8 +44,8 @@ class ContactsController extends BaseController
         $this->contact->Petition = $post['Petition'];
         $this->contact->Status = $post['Status'];
         $responseInsert  = $this->contact->save();
-        $this->contactService->storeContactsWithChannels($post['ChannelId'], $this->contact->Id);
-        $this->contactService->storeContactsWithTypesChannels($post['TypeChannelId'], $this->contact->Id);
+        //$this->contactService->storeContactsWithChannels($post['ChannelId'], $this->contact->Id);
+        //$this->contactService->storeContactsWithTypesChannels($post['TypeChannelId'], $this->contact->Id);
         /*$this->contactService->storeContactInTracing([
             "TypesObservationsId" => 1,
             "ContactsId" => $this->contact->Id,
@@ -110,9 +109,15 @@ class ContactsController extends BaseController
         $record->Petition = $post['Petition'];
         $record->Status = $post['Status'];
         $record->updated_at = Carbon::now('America/Bogota');
-        $record->save();
+        $responseUpdate = $record->save();
+
+        if (!$responseUpdate) {
+            throw new ContactsException('Ha ocurrido un error', 500);
+        }
+
         $this->contactService->storeContactsWithChannels($post['ChannelId'], $record->Id);
         $this->contactService->removeContactsWithChannels($post['ChannelIdDel'], $record->Id);
+
         return $this->response([
             "id"    => $record->Id,
             "name"  => $record->Name,
@@ -124,8 +129,18 @@ class ContactsController extends BaseController
     {
         $id = $args['id'];
         $record = $this->contact->find($id);
+
+        if ($record === null) {
+            throw new ContactsException('El registro no existe', 404);
+        }
+
         $record->Status = 0;
-        $record->save();
+        $responseDelete = $record->save();
+
+        if (!$responseDelete) {
+            throw new ContactsException('Ha ocurrido un error', 500);
+        }
+
         return $this->response('OK ' . $id, 200, $response);
     }
 
@@ -138,17 +153,17 @@ class ContactsController extends BaseController
             throw new ContactsException('El registro no existe', 404);
         }
 
-        $record->delete();
+        $responseDestroy =  $record->delete();
+
+        if (!$responseDestroy) {
+            throw new ContactsException('Ha ocurrido un error', 500);
+        }
+
         return $this->response('OK ' . $id, 200, $response);
     }
 
-    private function validate(array $post, array $rules): bool
+    public function __destruct()
     {
-        self::validateRequest($post, $rules);
-        if (self::failded()) {
-            return false;
-        }
-        return true;
+        $this->contact = null;
     }
-
 }

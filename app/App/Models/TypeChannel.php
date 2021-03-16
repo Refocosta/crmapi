@@ -16,7 +16,7 @@ class TypeChannel extends Model
 
     public function channels()
     {
-        return $this->belongsTo(Channel::class, 'ChannelsId', 'Id');
+        return $this->belongsTo(Channel::class, 'ChannelsId');
     }
 
     public function contacts()

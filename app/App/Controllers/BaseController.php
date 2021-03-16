@@ -14,4 +14,13 @@ abstract class BaseController
         return $response->withJson($result, $status);
     }
 
+    protected function validate(array $post, array $rules): bool
+    {
+        self::validateRequest($post, $rules);
+        if (self::failded()) {
+            return false;
+        }
+        return true;
+    }
+
 }
