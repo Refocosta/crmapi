@@ -1,6 +1,7 @@
 <?php namespace Config;
 use Illuminate\Database\Capsule\Manager as Capsule;
-abstract class Connections
+use Config\DataBase;
+abstract class Connections extends DataBase
 {
     protected $connection;
 
@@ -15,10 +16,10 @@ abstract class Connections
     {
         $this->connection->addConnection([
             'driver'    => 'sqlsrv',
-            'host'      => 'IT-PC',
-            'database'  => 'crm',
-            'username'  => 'sa',
-            'password'  => 'local1230',
+            'host'      => self::dataBase()["DATABASE_SERVER"],
+            'database'  => self::dataBase()["DATABASE_DB"],
+            'username'  => self::dataBase()["DATABASE_USER"],
+            'password'  => self::dataBase()["DATABASE_PASS"],
             'charset'   => 'utf8',
             'collation' => 'utf8_unicode_ci'
         ], 'crm');

@@ -4,7 +4,7 @@ abstract class BaseController
 {
     use \Core\Validator;
 
-    protected function response(array|string|int $data, int $status, Response $response): Response
+    protected function response($data, int $status, Response $response): Response
     {
         $result = [
             "status" => $status,
@@ -12,6 +12,15 @@ abstract class BaseController
             "message"=> $data
         ];
         return $response->withJson($result, $status);
+    }
+
+    protected function validate(array $post, array $rules): bool
+    {
+        self::validateRequest($post, $rules);
+        if (self::failded()) {
+            return false;
+        }
+        return true;
     }
 
 }
