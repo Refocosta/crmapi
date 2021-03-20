@@ -1,5 +1,4 @@
 <?php namespace App\Services;
-use App\Models\Channel;
 use App\Models\Contact;
 use App\Controllers\TracingsController;
 class ContactsServices
@@ -48,6 +47,5 @@ class ContactsServices
     public function storeContactInTracing(array $array)
     {
         $this->tracingController->storeFromSystem($array);
-
     }
 }

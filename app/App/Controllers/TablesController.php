@@ -1,6 +1,7 @@
 <?php namespace App\Controllers;
 use Exceptions\QueryException;
 use Core\Base;
+use Carbon\Carbon;
 final class TablesController extends Base
 {
     public function tables()
@@ -68,18 +69,20 @@ final class TablesController extends Base
                     ->onUpdate('cascade')
                     ->onDelete('cascade');
             });
+            // TYPES OBSERVATIONS //
             $this->DB()::schema('crm')->create('TypesObservations', function ($table) {
                 $table->increments('Id');
                 $table->string('Name');
                 $table->tinyInteger('Status');
                 $table->timestamps();
             });
+            // TRACINGS //
             $this->DB()::schema('crm')->create('Tracings', function ($table) {
                 $table->increments('Id');
                 $table->string('Observation');
                 $table->integer('TypesObservationsId');
                 $table->integer('ContactsId');
-                $table->integer('ChannelsId');
+                $table->integer('TypesChannelsId');
                 $table->integer('UsersId');
                 $table->timestamps();
                 $table->foreign('TypesObservationsId')
@@ -92,9 +95,22 @@ final class TablesController extends Base
                     ->on('Contacts')
                     ->onUpdate('cascade')
                     ->onDelete('cascade');
-                $table->foreign('ChannelsId')
+                $table->foreign('TypesChannelsId')
                     ->references('Id')
-                    ->on('Channels')
+                    ->on('TypesChannels')
+                    ->onUpdate('cascade')
+                    ->onDelete('cascade');
+            });
+            // TASKS //
+            $this->DB()::schema('crm')->create('Tasks', function ($table) {
+                $table->increments('Id');
+                $table->string('Description');
+                $table->integer('Status');
+                $table->integer('TracingsId');
+                $table->timestamps();
+                $table->foreign('TracingsId')
+                    ->references('Id')
+                    ->on('Tracings')
                     ->onUpdate('cascade')
                     ->onDelete('cascade');
             });
@@ -103,11 +119,22 @@ final class TablesController extends Base
         }
     }
 
+    public function defaults()
+    {
+        $this->DB()::connection('crm')->table('TypesObservations')->insert([
+            'Name' => "Automatico",
+            'Status' => 1,
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now()
+        ]);
+    }
+
     public function down()
     {
         try {
             $this->DB()::schema('crm')->dropIfExists('ContactsChannels');
             $this->DB()::schema('crm')->dropIfExists('ContactsTypesChannels');
+            $this->DB()::schema('crm')->dropIfExists('Tasks');
             $this->DB()::schema('crm')->dropIfExists('Tracings');
             $this->DB()::schema('crm')->dropIfExists('Contacts');
             $this->DB()::schema('crm')->dropIfExists('TypesChannels');

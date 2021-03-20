@@ -3,6 +3,7 @@ use App\Controllers\BaseController;
 use App\Models\TypeObservation;
 use Slim\Http\{Request, Response};
 use Respect\Validation\Validator as v;
+use Carbon\Carbon;
 use Exceptions\TypesObservationsException;
 class TypesObservationsController extends BaseController
 {
@@ -76,6 +77,7 @@ class TypesObservationsController extends BaseController
 
         $record->Name   = (!empty($post['Name'])) ? $post['Name'] : $record->Name;
         $record->Status = (!empty($post['Status'])) ? $post['Status'] : (int) $record->Status;
+        $record->updated_at = Carbon::now('America/Bogota');
         $responseUpdate = $record->save();
 
         if (!$responseUpdate) {

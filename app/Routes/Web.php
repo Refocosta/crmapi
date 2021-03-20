@@ -61,11 +61,27 @@ $app->group('/api/v1', function () use ($app) {
         $app->patch('/{id}', '\App\Controllers\TypesObservationsController:delete');
         $app->delete('/{id}', '\App\Controllers\TypesObservationsController:destroy');
     });
+    // TRACINGS //
+    $app->group('/tracings', function () use ($app) {
+        $app->get('', '\App\Controllers\TracingsController:index');
+        $app->post('', '\App\Controllers\TracingsController:store');
+        $app->get('/{id}', '\App\Controllers\TracingsController:show');
+    });
+    // TASKS //
+    $app->group('/tasks', function () use ($app) {
+        $app->get('', '\App\Controllers\TasksController:index');
+        $app->post('', '\App\Controllers\TasksController:store');
+        $app->get('/{id}', '\App\Controllers\TasksController:show');
+        $app->put('/{id}', '\App\Controllers\TasksController:update');
+        $app->patch('/{id}', '\App\Controllers\TasksController:delete');
+        $app->delete('/{id}', '\App\Controllers\TasksController:destroy');
+    });
 })->add(new KeyMiddleware());
 
 // DATA //
 $app->get('/tables', '\App\Controllers\TablesController:tables')->add(new AtdbMiddleware());
 $app->get('/down', '\App\Controllers\TablesController:down')->add(new AtdbMiddleware());
+$app->get('/defaults', '\App\Controllers\TablesController:defaults')->add(new AtdbMiddleware());
 
 // START AP //
 $app->run();
