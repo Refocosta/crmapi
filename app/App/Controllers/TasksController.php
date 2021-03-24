@@ -34,6 +34,7 @@ class TasksController extends BaseController
         $this->task->Description = $post['Description'];
         $this->task->Status = $post['Status'];
         $this->task->TracingsId = $post['TracingsId'];
+        $this->task->DeadLine = Carbon::parse($post['DeadLine']);
         $responseInsert = $this->task->save();
 
         if (!$responseInsert) {
@@ -98,6 +99,7 @@ class TasksController extends BaseController
         $record->Description = (!empty($post['Description'])) ? $post['Description'] : $record->Description;
         $record->Status = (!empty($post['Status'])) ? $post['Status'] : (int) $record->Status;
         $record->TracingsId = (!empty($post['TracingsId'])) ? $post['TracingsId'] : (int) $record->TracingsId;
+        $record->DeadLine = (!empty($post['DeadLine'])) ? $post['DeadLine'] : $record->DeadLine;
         $record->updated_at = Carbon::now('America/Bogota');
         $responseUpdate = $record->save();
 

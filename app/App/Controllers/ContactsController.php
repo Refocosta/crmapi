@@ -75,8 +75,8 @@ class ContactsController extends BaseController
     {
         $id = $args['id'];
         $record = $this->contact->with(array('channels' => function ($query){
-            $query->where('Status', 1);
-        }))->where('Status', 1)->get()->find($id);
+            return $query->where('Status', 1);
+        }))->with('tracings.typesObservations')->with('tracings.typesChannels')->where('Status', 1)->get()->find($id);
 
         if ($record === null) {
             throw new ContactsException('El registro no existe', 404);

@@ -79,7 +79,7 @@ final class TablesController extends Base
             // TRACINGS //
             $this->DB()::schema('crm')->create('Tracings', function ($table) {
                 $table->increments('Id');
-                $table->string('Observation');
+                $table->longText('Observation');
                 $table->integer('TypesObservationsId');
                 $table->integer('ContactsId');
                 $table->integer('TypesChannelsId');
@@ -101,16 +101,30 @@ final class TablesController extends Base
                     ->onUpdate('cascade')
                     ->onDelete('cascade');
             });
+            // TYPES TASKS //
+            $this->DB()::schema('crm')->create('TypesTasks', function ($table) {
+                $table->increments('Id');
+                $table->string('Name');
+                $table->tinyInteger('Status');
+                $table->timestamps();
+            });
             // TASKS //
             $this->DB()::schema('crm')->create('Tasks', function ($table) {
                 $table->increments('Id');
-                $table->string('Description');
+                $table->longText('Description');
                 $table->integer('Status');
                 $table->integer('TracingsId');
+                $table->integer('TypesTasksId');
+                $table->timestamp('DeadLine');
                 $table->timestamps();
                 $table->foreign('TracingsId')
                     ->references('Id')
                     ->on('Tracings')
+                    ->onUpdate('cascade')
+                    ->onDelete('cascade');
+                $table->foreign('TypesTasksId')
+                    ->references('Id')
+                    ->on('TypesTasks')
                     ->onUpdate('cascade')
                     ->onDelete('cascade');
             });
@@ -140,6 +154,7 @@ final class TablesController extends Base
             $this->DB()::schema('crm')->dropIfExists('TypesChannels');
             $this->DB()::schema('crm')->dropIfExists('Channels');
             $this->DB()::schema('crm')->dropIfExists('TypesObservations');
+            $this->DB()::schema('crm')->dropIfExists('TypesTasks');
         } catch (\Illuminate\Database\QueryException $e) {
             throw new QueryException($e->getMessage(), 500);
         }

@@ -67,6 +67,15 @@ $app->group('/api/v1', function () use ($app) {
         $app->post('', '\App\Controllers\TracingsController:store');
         $app->get('/{id}', '\App\Controllers\TracingsController:show');
     });
+    // TYPES TASKS //
+    $app->group('/types-tasks', function () use ($app) {
+        $app->get('', '\App\Controllers\TypesTasksController:index');
+        $app->post('', '\App\Controllers\TypesTasksController:store');
+        $app->get('/{id}', '\App\Controllers\TypesTasksController:show');
+        $app->put('/{id}', '\App\Controllers\TypesTasksController:update');
+        $app->patch('/{id}', '\App\Controllers\TypesTasksController:delete');
+        $app->delete('/{id}', 'App\Controllers\TypesTasksController:destroy');
+    });
     // TASKS //
     $app->group('/tasks', function () use ($app) {
         $app->get('', '\App\Controllers\TasksController:index');

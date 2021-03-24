@@ -18,4 +18,9 @@ class Task extends Model
     {
         return $this->belongsTo(Tracing::class, 'TracingsId', 'Id');
     }
+
+    public function typesTasks()
+    {
+        return $this->belongsTo(TypeTask::class, 'TypesTasksId', 'Id');
+    }
 }
