@@ -6,14 +6,17 @@ use Respect\Validation\Validator as v;
 use Carbon\Carbon;
 use Exceptions\TracingsException;
 use App\Models\Tracing;
+use App\Services\TracingsServices;
 class TracingsController extends BaseController
 {
 
     private $tracing;
+    private $services;
 
     public function __construct()
     {
         $this->tracing = new Tracing();
+        $this->services = new TracingsServices();
     }
 
     public function index(Request $request, Response $response, array $args) :Response
@@ -44,6 +47,10 @@ class TracingsController extends BaseController
         
         if (!$responseStore) {
             throw new TracingsException('Ha ocurrido un error', 500);
+        }
+
+        if (count($post['tasks']) > 0) {
+            $this->services->storeTracingsWithTasks($post['tasks'], $this->tracing->Id);
         }
 
         return $this->response('Registrado correctamente', 201, $response);
