@@ -73,7 +73,7 @@ class TracingsController extends BaseController
     {
         $id = $args['id'];
 
-        $record = $this->tracing->with('contacts')->with('typesChannels')->with('typesObservations')->get()->find($id);
+        $record = $this->tracing->with('contacts')->with('typesChannels')->with('typesObservations')->with('tasks.typesTasks')->get()->find($id);
 
         if ($record === null) {
             throw new TracingsException('El registro no existe', 404);

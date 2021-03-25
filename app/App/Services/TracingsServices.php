@@ -1,5 +1,5 @@
 <?php namespace App\Services;
-use App\Models\Tracing;
+use Exceptions\TasksException;
 use App\Models\Task;
 use Carbon\Carbon;
 class TracingsServices
@@ -20,14 +20,16 @@ class TracingsServices
                 'Description' => $tasks[$i]['Description'],
                 'Status' => $tasks[$i]['Status'],
                 'TracingsId' => $id,
-                'TypesTasksId' => 1,
+                'TypesTasksId' => $tasks[$i]['TypesTasksId'],
                 'DeadLine' => $tasks[$i]['DeadLine'],
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now()
             ];
         }
         $responseInsert = $this->tasks::insert($task);
-        print_r($responseInsert);
+        if (!$responseInsert) {
+            throw new TasksException('Ha ocurrido un error', 500);
+        }
     }
 
     public function __destruct()
