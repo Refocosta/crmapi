@@ -21,7 +21,13 @@ class TracingsController extends BaseController
 
     public function index(Request $request, Response $response, array $args) :Response
     {
-        return $this->response($this->tracing->with('contacts')->with('typesChannels')->with('typesObservations')->get(), 200, $response);
+        return $this->response($this->tracing->with(['contacts' => function ($query) {
+            return $query->where('Status', 1);
+        }])->with(['typesChannels' => function ($query) {
+            return $query->where('Status', 1);
+        }])->with(['typesObservations' => function ($query) {
+            return $query->where('Status', 1);
+        }])->get(), 200, $response);
     }
 
     public function store(Request $request, Response $response, array $args): Response
@@ -73,7 +79,13 @@ class TracingsController extends BaseController
     {
         $id = $args['id'];
 
-        $record = $this->tracing->with('contacts')->with('typesChannels')->with('typesObservations')->with('tasks.typesTasks')->get()->find($id);
+        $record = $this->tracing->with(['contacts' => function ($query) {
+            return $query->where('Status', 1);
+        }])->with(['typesChannels' => function ($query) {
+            return $query->where('Status', 1);
+        }])->with(['typesObservations' => function ($query) {
+            return $query->where('Status', 1);
+        }])->with('tasks.typesTasks')->get()->find($id);
 
         if ($record === null) {
             throw new TracingsException('El registro no existe', 404);

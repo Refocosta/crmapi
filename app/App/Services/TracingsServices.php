@@ -21,7 +21,7 @@ class TracingsServices
                 'Status' => $tasks[$i]['Status'],
                 'TracingsId' => $id,
                 'TypesTasksId' => $tasks[$i]['TypesTasksId'],
-                'DeadLine' => $tasks[$i]['DeadLine'],
+                'DeadLine' => Carbon::parse($tasks[$i]['DeadLine']),
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now()
             ];
