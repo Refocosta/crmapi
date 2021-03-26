@@ -23,4 +23,10 @@ abstract class BaseController
         return true;
     }
 
+    protected function exist(string $column, string|int $delimiter, object $class): bool
+    {
+        $record = $class->where($column, $delimiter)->get('Email')->first();
+        return ($record != null) ? true : false;
+    }
+
 }

@@ -38,24 +38,28 @@ class ContactsController extends BaseController
             throw new ContactsException('Request enviado incorrecto', 400);
         }
 
+        if ($this->exist('email', $post['Email'], $this->contact)) {
+            throw new ContactsException('El contacto ya existe', 401);
+        }
+
         $this->contact->Name = $post['Name'];
         $this->contact->Cellphone = $post['Cellphone'];
         $this->contact->Email = $post['Email'];
         $this->contact->Petition = $post['Petition'];
         $this->contact->Status = $post['Status'];
         $responseInsert  = $this->contact->save();
-        //$this->contactService->storeContactsWithChannels($post['ChannelId'], $this->contact->Id);
-        //$this->contactService->storeContactsWithTypesChannels($post['TypeChannelId'], $this->contact->Id);
-        /*$this->contactService->storeContactInTracing([
-            "TypesObservationsId" => 1,
-            "ContactsId" => $this->contact->Id,
-            "ChannelsId" => 1,
-            "UsersId" => 1
-        ]);*/
-
         if (!$responseInsert) {
             throw new ContactsException('Ha ocurrido un error', 500);
         }
+        
+        $this->contactService->storeContactsWithChannels($post['ChannelId'], $this->contact->Id);
+        $this->contactService->storeContactsWithTypesChannels($post['TypeChannelId'], $this->contact->Id);
+        $this->contactService->storeContactInTracing([
+            "TypesObservationsId" => 1,
+            "ContactsId" => $this->contact->Id,
+            "TypesChannelsId" => $post['TypeChannelId'][0],
+            "UsersId" => 1
+        ]);
 
         return $this->response([
             "Id"   => $this->contact->Id,
@@ -71,8 +75,8 @@ class ContactsController extends BaseController
     {
         $id = $args['id'];
         $record = $this->contact->with(array('channels' => function ($query){
-            $query->where('Status', 1);
-        }))->where('Status', 1)->get()->find($id);
+            return $query->where('Status', 1);
+        }))->with('tracings.typesObservations')->with('tracings.typesChannels')->where('Status', 1)->get()->find($id);
 
         if ($record === null) {
             throw new ContactsException('El registro no existe', 404);

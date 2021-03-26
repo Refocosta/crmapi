@@ -14,13 +14,23 @@ class Tracing extends Model
 
     protected $table = "Tracings";
 
+    public function typesObservations()
+    {
+        return $this->belongsTo(TypeObservation::class, 'TypesObservationsId', 'Id');
+    }
+
     public function contacts()
     {
         return $this->belongsTo(Contact::class, 'ContactsId', 'Id');
     }
 
-    public function channels()
+    public function typesChannels()
     {
-        return $this->belongsTo(Channel::class, 'ChannelsId', 'Id');
+        return $this->belongsTo(TypeChannel::class, 'TypesChannelsId', 'Id');
+    }
+
+    public function tasks()
+    {
+        return $this->hasMany(Task::class, 'TracingsId', 'Id');
     }
 }

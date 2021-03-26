@@ -14,6 +14,15 @@ class Contact extends Model
 
     protected $table = "Contacts";
 
+    // ONE TO MANY //
+
+    public function tracings()
+    {
+        return $this->hasMany(Tracing::class, 'ContactsId', 'Id');
+    }
+
+    // MANY TO MANY //
+
     public function channels()
     {
         return $this->belongsToMany(Channel::class, 'ContactsChannels', 'ContactsId', 'ChannelsId');
