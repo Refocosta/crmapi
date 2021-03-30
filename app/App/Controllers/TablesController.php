@@ -12,7 +12,7 @@ final class TablesController extends Base
                 $table->increments('Id');
                 $table->string('Name', 55);
                 $table->string('Cellphone', 15);
-                $table->string('Email', 125);
+                $table->string('Email', 125)->unique();
                 $table->text('Petition');
                 $table->tinyInteger('Status');
                 $table->timestamps();
@@ -20,7 +20,7 @@ final class TablesController extends Base
             // CHANNELS //
             $this->DB()::schema('crm')->create('Channels', function ($table) {
                 $table->increments('Id');
-                $table->string('Name');
+                $table->string('Name', 45);
                 $table->tinyInteger('Status');
                 $table->timestamps();
             });
@@ -43,7 +43,7 @@ final class TablesController extends Base
             // TYPES CHANNELS //
             $this->DB()::schema('crm')->create('TypesChannels', function ($table) {
                 $table->increments('Id');
-                $table->string('Name');
+                $table->string('Name', 45);
                 $table->integer('ChannelsId');
                 $table->tinyInteger('Status');
                 $table->timestamps();
@@ -72,7 +72,7 @@ final class TablesController extends Base
             // TYPES OBSERVATIONS //
             $this->DB()::schema('crm')->create('TypesObservations', function ($table) {
                 $table->increments('Id');
-                $table->string('Name');
+                $table->string('Name', 45);
                 $table->tinyInteger('Status');
                 $table->timestamps();
             });
@@ -84,6 +84,7 @@ final class TablesController extends Base
                 $table->integer('ContactsId');
                 $table->integer('TypesChannelsId');
                 $table->integer('UsersId');
+                $table->tinyInteger('Status');
                 $table->timestamps();
                 $table->foreign('TypesObservationsId')
                     ->references('Id')
