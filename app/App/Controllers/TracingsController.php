@@ -56,6 +56,8 @@ class TracingsController extends BaseController
             $this->tracing->TypesChannelsId = $post["TypesChannelsId"];
             $this->tracing->UsersId = $post["UsersId"];
             $this->tracing->Status = 1;
+            $this->tracing->Quotation = (!empty($post["Quotation"])) ? $post["Quotation"] : 0;
+            $this->tracing->Price = empty(!$post["Price"]) ? $post["Price"] : 0;
             $responseStore = $this->tracing->save();
             
             if (!$responseStore) {
@@ -110,6 +112,47 @@ class TracingsController extends BaseController
             return $this->response($record, 200, $response);
         } catch (QueryException $e) {
             throw new TracingsException('SEGUIMIENTOS_ERR SHOW', 500);
+        }
+    }
+
+    public function update(Request $request, Response $response, array $args): Response
+    {
+        try {
+            $id = $args['id'];
+            $post = $request->getParsedBody();
+
+            if (!$this->validate($post, [
+                'TypesObservationsId' => v::optional(v::notEmpty()->intType()),
+                'ContactsId'          => v::optional(v::notEmpty()->intType()),
+                'TypesChannelsId'     => v::optional(v::notEmpty()->intType()),
+                'Observation'         => v::optional(v::notEmpty())
+            ])) {
+                throw new TracingsException('Request enviado incorrecto', 400);
+            }
+
+            $record = $this->tracing->find($id);
+
+            $record->TypesObservationsId = (!empty($post['TypesObservationsId'])) ? $post['TypesObservationsId'] : (int) $record->TypesObservationsId;
+            $record->ContactsId = (!empty($post['ContactsId'])) ? $post['ContactsId'] : (int) $record->ContactsId;
+            $record->TypesChannelsId = (!empty($post['TypesChannelsId'])) ? $post['TypesChannelsId'] : (int) $record->TypesChannelsId;
+            $record->Observation = (!empty($post['Observation'])) ? $post['Observation'] : $record->Observation;
+            $record->Quotation = (!empty($post['Quotation'])) ? $post['Quotation'] : $record->Quotation;
+            $record->Price = (!empty($post['Price'])) ? $post['Price'] : $record->Price;
+            $record->Sale = (!empty($post['Sale'])) ? $post['Sale'] : $record->Sale;
+            $record->Value = (!empty($post['Value'])) ? $post['Value'] : $record->Value;
+            $record->updated_at = Carbon::now('America/Bogota');
+            $responseUpdate = $record->save();
+
+            if (!$responseUpdate) {
+                throw new TracingsException('Ha ocurrido un error', 500);
+            }
+
+            return $this->response([
+                "id" => $record->Id
+            ], 200, $response);
+            return $response;
+        } catch (QueryException $e) {
+            throw new TracingsException('SEGUIMIENTOS_ERR UPDATE', 500);
         }
     }
 
