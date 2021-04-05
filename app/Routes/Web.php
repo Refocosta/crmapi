@@ -61,6 +61,7 @@ $app->group('/api/v1', function () use ($app) {
         $app->get('', '\App\Controllers\TracingsController:index');
         $app->post('', '\App\Controllers\TracingsController:store');
         $app->get('/{id}', '\App\Controllers\TracingsController:show');
+        $app->put('/{id}', '\App\Controllers\TracingsController:update');
     });
     // TYPES TASKS //
     $app->group('/types-tasks', function () use ($app) {

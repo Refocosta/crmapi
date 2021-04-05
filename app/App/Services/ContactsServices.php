@@ -1,6 +1,8 @@
 <?php namespace App\Services;
 use App\Models\Contact;
 use App\Controllers\TracingsController;
+use Illuminate\Database\QueryException;
+use Exceptions\ContactsException;
 class ContactsServices
 {
     private $tracingController;
@@ -10,42 +12,63 @@ class ContactsServices
         $this->tracingController = new TracingsController();
     }
 
-    public function storeContactsWithChannels(array $channelId, int $contactId): ?bool
+    public function storeContactsWithChannels(array $channelId, int $contactId)
     {
-        if (count($channelId) > 0) {
-            $contact = Contact::find($contactId);
-            for ($i = 0; $i < count($channelId); $i++) { 
-                $responseAttach = $contact->channels()->attach($channelId[$i]);
+        try {
+            if (count($channelId) > 0) {
+                $contact = Contact::find($contactId);
+                for ($i = 0; $i < count($channelId); $i++) { 
+                    $contact->channels()->attach($channelId[$i]);
+                }
             }
-            return $responseAttach;
+        } catch (QueryException $e) {
+            throw new ContactsException('CONTACTOS_SERVICE_ERR ATACH', 500);
         }
-        return true;
     }
 
-    public function removeContactsWithChannels(array $channelIdDel, int $contactId): ?bool
+    public function removeContactsWithChannels(array $channelIdDel, int $contactId)
     {
-        if (count($channelIdDel) > 0) {
-            $contact = Contact::find($contactId);
-            for ($i = 0; $i < count($channelIdDel); $i++) {
-                $responseDetach = $contact->channels()->detach($channelIdDel[$i]);
+        try {
+            if (count($channelIdDel) > 0) {
+                $contact = Contact::find($contactId);
+                for ($i = 0; $i < count($channelIdDel); $i++) {
+                    $contact->channels()->detach($channelIdDel[$i]);
+                }
             }
+        } catch (QueryException $e) {
+            throw new ContactsException('CONTACTOS_SERVICE_ERR DETACH', 500);
         }
-        return true;
+        
     }
 
-    public function storeContactsWithTypesChannels(array $typeChannelId, int $contactId): ?bool
+    public function storeContactsWithTypesChannels(array $typeChannelId, int $contactId)
     {
-        if (count($typeChannelId) > 0) {
-            $contact = Contact::find($contactId);
-            for ($i = 0; $i < count($typeChannelId); $i++) {
-                $responseAttach = $contact->typesChannels()->attach($typeChannelId[$i]);
+        try {
+            if (count($typeChannelId) > 0) {
+                $contact = Contact::find($contactId);
+                for ($i = 0; $i < count($typeChannelId); $i++) {
+                    $contact->typesChannels()->attach($typeChannelId[$i]);
+                }
             }
+        } catch (QueryException $e) {
+            throw new ContactsException('CONTACTOS_SERVICE_ERR ATACH', 500);
         }
-        return true;
     }
 
     public function storeContactInTracing(array $array)
     {
         $this->tracingController->storeFromSystem($array);
+    }
+
+    public function deleteTracingsWhenContactDeleted(Contact $contact)
+    {
+        try {
+            for ($i = 0; $i < count($contact->tracings); $i++) {
+            $contact->tracings[$i]->Status = 0;
+            $contact->tracings[$i]->save();
+        }
+        } catch (\Illuminate\Database\QueryException $e) {
+            throw new ContactsException($e->getMessage(), 500);
+        }
     }
 }
