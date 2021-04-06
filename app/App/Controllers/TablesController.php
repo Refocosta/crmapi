@@ -85,10 +85,11 @@ final class TablesController extends Base
                 $table->integer('TypesChannelsId');
                 $table->integer('UsersId');
                 $table->tinyInteger('Status');
-                $table->tinyInteger('Quotation')->nullable();
-                $table->float('Price')->nullable();
-                $table->tinyInteger('Sale')->nullable();
-                $table->float('Value')->nullable();
+                $table->tinyInteger('Quotation')->nullable()->default(0);
+                $table->float('Price')->nullable()->default(0);
+                $table->tinyInteger('Sale')->nullable()->default(0);
+                $table->float('Value')->nullable()->default(0);
+                $table->tinyInteger('Auto')->default(0);
                 $table->timestamps();
                 $table->foreign('TypesObservationsId')
                     ->references('Id')
