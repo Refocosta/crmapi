@@ -55,9 +55,9 @@ class ContactsServices
         }
     }
 
-    public function storeContactInTracing(array $array)
+    public function storeContactInTracing(array $array, int $type)
     {
-        $this->tracingController->storeFromSystem($array);
+        $this->tracingController->storeFromSystem($array, $type);
     }
 
     public function deleteTracingsWhenContactDeleted(Contact $contact)

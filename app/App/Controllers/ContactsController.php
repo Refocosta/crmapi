@@ -65,7 +65,7 @@ class ContactsController extends BaseController
                 "ContactsId" => $this->contact->Id,
                 "TypesChannelsId" => $post['TypeChannelId'][0],
                 "UsersId" => 1
-            ]);
+            ], $post['Type']);
 
             return $this->response([
                 "Id"   => $this->contact->Id,
