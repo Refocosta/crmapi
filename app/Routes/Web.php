@@ -72,6 +72,9 @@ $app->group('/api/v1', function () use ($app) {
         $app->patch('/{id}', '\App\Controllers\TypesTasksController:delete');
         $app->delete('/{id}', 'App\Controllers\TypesTasksController:destroy');
     });
+    $app->group('/mail', function () use ($app) {
+        $app->get('', '\App\Controllers\MailerController:mail');
+    });
     // TASKS //
     $app->group('/tasks', function () use ($app) {
         $app->get('', '\App\Controllers\TasksController:index');

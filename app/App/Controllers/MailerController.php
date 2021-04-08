@@ -1,0 +1,57 @@
+<?php namespace App\Controllers;
+use App\Controllers\BaseController;
+use Config\Mail;
+use Slim\Http\{Request, Response};
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+use Exceptions\MailException;
+class MailerController extends BaseController
+{
+    private $mail;
+    private $host;
+    private $user;
+    private $pass;
+    private $port;
+    private $secure;
+
+    public function __construct()
+    {
+        $this->mail = new PHPMailer(true);
+        $this->host = Mail::mail()["SMTP_HOST"];
+        $this->user = Mail::mail()["SMTP_USER"];
+        $this->pass = Mail::mail()["SMTP_PASS"];
+        $this->port = Mail::mail()["SMTP_PORT"];
+        $this->secure = Mail::mail()["SMTP_SECU"];
+    }
+
+    public function mail(Request $request, Response $response): Response
+    {
+        try {
+            //$this->mail->SMTPDebug = 2;
+            $this->mail->isSMTP();
+            $this->mail->Host       = $this->host;
+            $this->mail->SMTPAuth   = true;
+            $this->mail->Username   = $this->user;
+            $this->mail->Password   = $this->pass;
+            $this->mail->SMTPSecure = $this->secure;
+            $this->mail->Port       = $this->port;
+            $this->mail->setFrom('nativa@refocosta.com', 'CRM');
+            $this->mail->addAddress('cristianv@refocosta.com', 'Cristian');
+            //$this->mail->addReplyTo('info@example.com', 'Information');
+            //$this->mail->addCC('cc@example.com');
+            //$this->mail->addBCC('bcc@example.com');
+            $this->mail->isHTML(true);
+            $this->mail->Subject = 'Nativa crm api no responser';
+            $this->mail->Body    = 'Mensaje de prueba desde el crm api';
+            $this->mail->send();
+            return $this->response('Mensaje enviado', 200, $response);
+        } catch (Exception $e) {
+            throw new MailException($this->mail->ErrorInfo, 500);
+        }
+    }
+
+    public function __destruct()
+    {
+        $this->mail = null;
+    }
+}
