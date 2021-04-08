@@ -23,6 +23,16 @@ abstract class Connections extends DataBase
             'charset'   => 'utf8',
             'collation' => 'utf8_unicode_ci'
         ], 'crm');
+
+        $this->connection->addConnection([
+            'driver'    => 'sqlsrv',
+            'host'      => '54.166.100.176,1845',
+            'database'  => 'RefosusPruebas',
+            'username'  => 'refosus',
+            'password'  => 'SAsusweb02**',
+            'charset'   => 'utf8',
+            'collation' => 'utf8_unicode_ci'
+        ], 'refosus');
     }
 
     private function start()

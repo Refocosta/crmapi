@@ -72,9 +72,6 @@ $app->group('/api/v1', function () use ($app) {
         $app->patch('/{id}', '\App\Controllers\TypesTasksController:delete');
         $app->delete('/{id}', 'App\Controllers\TypesTasksController:destroy');
     });
-    $app->group('/mail', function () use ($app) {
-        $app->get('', '\App\Controllers\MailerController:mail');
-    });
     // TASKS //
     $app->group('/tasks', function () use ($app) {
         $app->get('', '\App\Controllers\TasksController:index');
@@ -83,6 +80,10 @@ $app->group('/api/v1', function () use ($app) {
         $app->put('/{id}', '\App\Controllers\TasksController:update');
         $app->patch('/{id}', '\App\Controllers\TasksController:delete');
         $app->delete('/{id}', '\App\Controllers\TasksController:destroy');
+    });
+    // MAILS //
+    $app->group('/mail', function () use ($app) {
+        $app->post('', '\App\Controllers\MailerController:mail');
     });
 })->add(new KeyMiddleware());
 

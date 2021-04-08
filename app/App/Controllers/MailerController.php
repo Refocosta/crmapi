@@ -22,9 +22,10 @@ class MailerController extends BaseController
         $this->pass = Mail::mail()["SMTP_PASS"];
         $this->port = Mail::mail()["SMTP_PORT"];
         $this->secure = Mail::mail()["SMTP_SECU"];
+        $this->config();
     }
 
-    public function mail(Request $request, Response $response): Response
+    private function config()
     {
         try {
             //$this->mail->SMTPDebug = 2;
@@ -36,18 +37,38 @@ class MailerController extends BaseController
             $this->mail->SMTPSecure = $this->secure;
             $this->mail->Port       = $this->port;
             $this->mail->setFrom('nativa@refocosta.com', 'CRM');
-            $this->mail->addAddress('cristianv@refocosta.com', 'Cristian');
-            //$this->mail->addReplyTo('info@example.com', 'Information');
-            //$this->mail->addCC('cc@example.com');
-            //$this->mail->addBCC('bcc@example.com');
+        } catch (Exception $e) {
+            throw new MailException($this->mail->ErrorInfo, 500);
+        }
+    }
+
+    public function mail(Request $request, Response $response): Response
+    {
+        try {
+            $post = $request->getParsedBody();
+            $address = $post['Address'];
+            $subject = $post['Subject'];
+            $body    = $post['Body'];
+            $cc     = $post['Cc'];
+            $this->mail->addAddress($address);
+            if (count($cc) > 0) {
+                foreach ($cc as $to) {
+                    $this->mail->addCC($to);
+                }
+            }
             $this->mail->isHTML(true);
-            $this->mail->Subject = 'Nativa crm api no responser';
-            $this->mail->Body    = 'Mensaje de prueba desde el crm api';
+            $this->mail->Subject = $subject;
+            $this->mail->Body    = $body;
             $this->mail->send();
             return $this->response('Mensaje enviado', 200, $response);
         } catch (Exception $e) {
             throw new MailException($this->mail->ErrorInfo, 500);
         }
+    }
+
+    public function mailFromSystem()
+    {
+
     }
 
     public function __destruct()
