@@ -1,15 +1,18 @@
 <?php namespace App\Services;
 use App\Models\Contact;
 use App\Controllers\TracingsController;
+use App\Controllers\MailerController;
 use Illuminate\Database\QueryException;
 use Exceptions\ContactsException;
 class ContactsServices
 {
     private $tracingController;
+    private $emailCotroller;
 
     public function __construct()
     {
         $this->tracingController = new TracingsController();
+        $this->emailCotroller = new MailerController();
     }
 
     public function storeContactsWithChannels(array $channelId, int $contactId)
@@ -70,5 +73,10 @@ class ContactsServices
         } catch (\Illuminate\Database\QueryException $e) {
             throw new ContactsException($e->getMessage(), 500);
         }
+    }
+
+    public function sendEmailNotification(array $data)
+    {
+        $this->emailCotroller->mailFromSystem($data);
     }
 }

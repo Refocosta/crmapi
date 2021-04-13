@@ -66,9 +66,20 @@ class MailerController extends BaseController
         }
     }
 
-    public function mailFromSystem()
+    public function mailFromSystem(array $data)
     {
-
+        try {
+            $address = $data['Address'];
+            $subject = $data['Subject'];
+            $body    = $data['Body'];
+            $this->mail->addAddress($address);
+            $this->mail->isHTML(true);
+            $this->mail->Subject = $subject;
+            $this->mail->Body = $body;
+            $this->mail->send();
+        } catch (Exception $e) {
+            throw new MailException($this->mail->ErrorInfo, 500);
+        }
     }
 
     public function __destruct()
