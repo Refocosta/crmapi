@@ -14,6 +14,7 @@ final class TablesController extends Base
                 $table->string('Cellphone', 15);
                 $table->string('Email', 125)->unique();
                 $table->text('Petition');
+                $table->string('User', 125);
                 $table->tinyInteger('Status');
                 $table->timestamps();
             });

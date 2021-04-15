@@ -39,6 +39,7 @@ class ContactsController extends BaseController
                 'Cellphone' => v::notEmpty()->stringType()->length(1, 15),
                 'Email'     => v::notEmpty()->email()->length(1, 125),
                 'Petition'  => v::notEmpty()->stringType(),
+                'User'      => v::optional(v::notEmpty()->email()->length(1, 125)),
                 'Status'    => v::notEmpty()->intType()->length(1, 1)
             ])) {
                 throw new ContactsException('Request enviado incorrecto', 400);
@@ -52,18 +53,32 @@ class ContactsController extends BaseController
             $this->contact->Cellphone = $post['Cellphone'];
             $this->contact->Email = $post['Email'];
             $this->contact->Petition = $post['Petition'];
+            $this->contact->User = (!empty($post['User'])) ? $post['User'] : 'cristianv@refocosta.com';
             $this->contact->Status = $post['Status'];
             $responseInsert  = $this->contact->save();
             if (!$responseInsert) {
                 throw new ContactsException('Ha ocurrido un error', 500);
             }
             
-            $this->service->storeContactsWithChannels($post['ChannelId'], $this->contact->Id);
-            $this->service->storeContactsWithTypesChannels($post['TypeChannelId'], $this->contact->Id);
+            $this->service->sendEmailNotification([
+                "Subject" => "Registro de contacto",
+                "Body" => "Se ha registrado el contacto <strong>" . $this->contact->Name . "</strong>",
+                "Address" => $this->contact->User
+            ]);
+
+            if (!empty($post['ChannelId'])) {
+                $this->service->storeContactsWithChannels($post['ChannelId'], $this->contact->Id);
+            }
+            if (!empty($post['TypeChannelId'])) {
+                $this->service->storeContactsWithTypesChannels($post['TypeChannelId'], $this->contact->Id);
+            }
+            if (!empty($post['Channel']) && !empty($post['TypeChannel'])) {
+                $idChannel = $this->service->storeChannelAndStoreContactWithChannel($post['Channel'], $post['TypeChannel'], $this->contact->Id);
+            }
             $this->service->storeContactInTracing([
                 "TypesObservationsId" => 1,
                 "ContactsId" => $this->contact->Id,
-                "TypesChannelsId" => $post['TypeChannelId'][0],
+                "TypesChannelsId" => (empty($post['TypeChannelId'])) ? $idChannel : $post['TypeChannelId'][0],
                 "UsersId" => 1
             ], $post['Type']);
 
@@ -75,9 +90,15 @@ class ContactsController extends BaseController
                 "Petition" => $this->contact->Petition,
                 "Status" => $this->contact->Status
             ], 201, $response);
+            return $response;
         } catch (QueryException $e) {
             throw new ContactsException('USUARIOS_ERR STORE', 500);
         }
+    }
+
+    private function storeFromThird()
+    {
+
     }
 
     public function show(Request $request, Response $response, array $args): Response
