@@ -1,15 +1,24 @@
 <?php namespace App\Services;
 use App\Models\Contact;
 use App\Controllers\TracingsController;
+use App\Controllers\MailerController;
+use App\Controllers\ChannelsController;
+use App\Controllers\TypesChannelsController;
 use Illuminate\Database\QueryException;
 use Exceptions\ContactsException;
 class ContactsServices
 {
     private $tracingController;
+    private $emailCotroller;
+    private $channelController;
+    private $typeChannelController;
 
     public function __construct()
     {
         $this->tracingController = new TracingsController();
+        $this->emailCotroller = new MailerController();
+        $this->channelController = new ChannelsController();
+        $this->typeChannelController = new TypesChannelsController();
     }
 
     public function storeContactsWithChannels(array $channelId, int $contactId)
@@ -55,6 +64,15 @@ class ContactsServices
         }
     }
 
+    public function storeChannelAndStoreContactWithChannel(string $channel, string $typeChannel, int $idContact): int
+    {
+        $idChannel = $this->channelController->storeFromSystem($channel);
+        $idTypeChannel = $this->typeChannelController->storeFromSystem($typeChannel, $idChannel);
+        $this->storeContactsWithChannels([$idChannel], $idContact);
+        $this->storeContactsWithTypesChannels([$idTypeChannel], $idContact);
+        return $idTypeChannel;
+    }
+
     public function storeContactInTracing(array $array, int $type)
     {
         $this->tracingController->storeFromSystem($array, $type);
@@ -70,5 +88,18 @@ class ContactsServices
         } catch (\Illuminate\Database\QueryException $e) {
             throw new ContactsException($e->getMessage(), 500);
         }
+    }
+
+    public function sendEmailNotification(array $data)
+    {
+        $this->emailCotroller->mailFromSystem($data);
+    }
+
+    public function __destruct()
+    {
+        $this->tracingController = null;
+        $this->emailCotroller = null;
+        $this->channelController = null;
+        $this->typeChannelController = null;
     }
 }

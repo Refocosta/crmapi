@@ -9,7 +9,11 @@ trait Validator
     {
         foreach ($rules as $field => $rule) {
             try {
-                $rule->assert($request[$field]);
+                if (!empty($request[$field])) {
+                    $rule->assert($request[$field]);
+                } else {
+                    self::$errors = true;
+                }
             } catch (NestedValidationException $e) {
                 self::$errors = true;
             }
