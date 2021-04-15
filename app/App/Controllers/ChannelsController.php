@@ -59,6 +59,18 @@ class ChannelsController extends BaseController
         }
     }
 
+    public function storeFromSystem(string $channel): int
+    {
+        try {
+            $this->channel->Name = $channel;
+            $this->channel->Status = 1;
+            $this->channel->save();
+            return $this->channel->Id;
+        } catch (QueryException $e) {
+            throw new ChannelsException('CATEGORIAS_CANALES STORE SYSTEM', 500);
+        }
+    }
+
     public function show(Request $request, Response $response, array $args): Response
     {
         try {

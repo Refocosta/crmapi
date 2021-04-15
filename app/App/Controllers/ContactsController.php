@@ -60,17 +60,25 @@ class ContactsController extends BaseController
                 throw new ContactsException('Ha ocurrido un error', 500);
             }
             
-            $this->service->sendEmailNotification([
+            /*$this->service->sendEmailNotification([
                 "Subject" => "Registro de contacto",
                 "Body" => "Se ha registrado el contacto <strong>" . $this->contact->Name . "</strong>",
                 "Address" => $this->contact->User
-            ]);
-            $this->service->storeContactsWithChannels($post['ChannelId'], $this->contact->Id);
-            $this->service->storeContactsWithTypesChannels($post['TypeChannelId'], $this->contact->Id);
+            ]);*/
+
+            if (!empty($post['ChannelId'])) {
+                $this->service->storeContactsWithChannels($post['ChannelId'], $this->contact->Id);
+            }
+            if (!empty($post['TypeChannelId'])) {
+                $this->service->storeContactsWithTypesChannels($post['TypeChannelId'], $this->contact->Id);
+            }
+            if (!empty($post['Channel']) && !empty($post['TypeChannel'])) {
+                $idChannel = $this->service->storeChannelAndStoreContactWithChannel($post['Channel'], $post['TypeChannel'], $this->contact->Id);
+            }
             $this->service->storeContactInTracing([
                 "TypesObservationsId" => 1,
                 "ContactsId" => $this->contact->Id,
-                "TypesChannelsId" => $post['TypeChannelId'][0],
+                "TypesChannelsId" => (empty($post['TypeChannelId'])) ? $idChannel : $post['TypeChannelId'][0],
                 "UsersId" => 1
             ], $post['Type']);
 
@@ -82,9 +90,15 @@ class ContactsController extends BaseController
                 "Petition" => $this->contact->Petition,
                 "Status" => $this->contact->Status
             ], 201, $response);
+            return $response;
         } catch (QueryException $e) {
             throw new ContactsException('USUARIOS_ERR STORE', 500);
         }
+    }
+
+    private function storeFromThird()
+    {
+
     }
 
     public function show(Request $request, Response $response, array $args): Response
