@@ -39,7 +39,7 @@ class ContactsController extends BaseController
                 'Cellphone' => v::notEmpty()->stringType()->length(1, 15),
                 'Email'     => v::notEmpty()->email()->length(1, 125),
                 'Petition'  => v::notEmpty()->stringType(),
-                'User'      => v::notEmpty()->email()->length(1, 125),
+                'User'      => v::optional(v::notEmpty()->email()->length(1, 125)),
                 'Status'    => v::notEmpty()->intType()->length(1, 1)
             ])) {
                 throw new ContactsException('Request enviado incorrecto', 400);
@@ -53,18 +53,18 @@ class ContactsController extends BaseController
             $this->contact->Cellphone = $post['Cellphone'];
             $this->contact->Email = $post['Email'];
             $this->contact->Petition = $post['Petition'];
-            $this->contact->User = $post['User'];
+            $this->contact->User = (!empty($post['User'])) ? $post['User'] : 'cristianv@refocosta.com';
             $this->contact->Status = $post['Status'];
             $responseInsert  = $this->contact->save();
             if (!$responseInsert) {
                 throw new ContactsException('Ha ocurrido un error', 500);
             }
             
-            /*$this->service->sendEmailNotification([
+            $this->service->sendEmailNotification([
                 "Subject" => "Registro de contacto",
                 "Body" => "Se ha registrado el contacto <strong>" . $this->contact->Name . "</strong>",
                 "Address" => $this->contact->User
-            ]);*/
+            ]);
 
             if (!empty($post['ChannelId'])) {
                 $this->service->storeContactsWithChannels($post['ChannelId'], $this->contact->Id);
