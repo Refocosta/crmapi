@@ -148,6 +148,19 @@ final class TablesController extends Base
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now()
         ]);
+        $this->DB()::connection('crm')->table('Channels')->insert([
+            'Name' => "Automatico",
+            'Status' => 1,
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now()
+        ]);
+        $this->DB()::connection('crm')->table('TypesChannels')->insert([
+            'Name' => "Automatico",
+            'ChannelsId' => 1,
+            'Status' => 1,
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now()
+        ]);
     }
 
     public function down()

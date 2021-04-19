@@ -24,7 +24,7 @@ class ContactsController extends BaseController
         try {
             return $this->response($this->contact->with(['channels' => function ($query){
                 return $query->where('Status', 1);
-            }])->where('Status', 1)->get(), 200, $response);
+            }])->where('Status', 1)->where('User', $request->getHeaderLine('User'))->get(), 200, $response);
         } catch (QueryException $e) {
             throw new ContactsException('CONTACTOS_ERR INDEX', 500);
         }

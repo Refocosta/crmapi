@@ -85,6 +85,10 @@ $app->group('/api/v1', function () use ($app) {
     $app->group('/mail', function () use ($app) {
         $app->post('', '\App\Controllers\MailerController:mail');
     });
+
+    // -- NATIVA -- //
+    // USERS //
+    $app->get('/users', '\App\Controllers\Nativa\UsersController:index');
 })->add(new KeyMiddleware());
 
 // DATA //
