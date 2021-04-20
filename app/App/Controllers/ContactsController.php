@@ -96,11 +96,6 @@ class ContactsController extends BaseController
         }
     }
 
-    private function storeFromThird()
-    {
-
-    }
-
     public function show(Request $request, Response $response, array $args): Response
     {
         try {
@@ -147,6 +142,7 @@ class ContactsController extends BaseController
             $record->Cellphone = $post['Cellphone'];
             $record->Email = $post['Email'];
             $record->Petition = $post['Petition'];
+            $record->User = $post['User'];
             $record->Status = $post['Status'];
             $record->updated_at = Carbon::now('America/Bogota');
             $responseUpdate = $record->save();
@@ -154,6 +150,12 @@ class ContactsController extends BaseController
             if (!$responseUpdate) {
                 throw new ContactsException('Ha ocurrido un error', 500);
             }
+
+            $this->service->sendEmailNotification([
+                "Subject" => "Actualizacion de contacto",
+                "Body" => "Se ha editado el contacto <strong>" . $record->Name . "</strong>",
+                "Address" => $record->User
+            ]);
 
             $this->service->storeContactsWithChannels($post['ChannelId'], $record->Id);
             $this->service->removeContactsWithChannels($post['ChannelIdDel'], $record->Id);
