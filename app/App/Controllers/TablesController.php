@@ -123,6 +123,7 @@ final class TablesController extends Base
                 $table->integer('TracingsId');
                 $table->integer('TypesTasksId');
                 $table->timestamp('DeadLine');
+                $table->string('User', 125);
                 $table->timestamps();
                 $table->foreign('TracingsId')
                     ->references('Id')
