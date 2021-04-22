@@ -123,6 +123,7 @@ final class TablesController extends Base
                 $table->integer('TracingsId');
                 $table->integer('TypesTasksId');
                 $table->timestamp('DeadLine');
+                $table->string('User', 125);
                 $table->timestamps();
                 $table->foreign('TracingsId')
                     ->references('Id')
@@ -144,6 +145,19 @@ final class TablesController extends Base
     {
         $this->DB()::connection('crm')->table('TypesObservations')->insert([
             'Name' => "Automatico",
+            'Status' => 1,
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now()
+        ]);
+        $this->DB()::connection('crm')->table('Channels')->insert([
+            'Name' => "Automatico",
+            'Status' => 1,
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now()
+        ]);
+        $this->DB()::connection('crm')->table('TypesChannels')->insert([
+            'Name' => "Automatico",
+            'ChannelsId' => 1,
             'Status' => 1,
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now()
