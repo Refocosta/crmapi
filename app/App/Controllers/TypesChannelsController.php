@@ -58,11 +58,16 @@ class TypesChannelsController extends BaseController
     public function storeFromSystem(string $typeChannel, int $idChannel): int
     {
         try {
-            $this->typeChannel->Name = $typeChannel;
-            $this->typeChannel->ChannelsId = $idChannel;
-            $this->typeChannel->Status = 1;
-            $this->typeChannel->save();
-            return $this->typeChannel->Id;
+            if ($this->exist('Name', $typeChannel, $this->typeChannel)) {
+                $record = $this->typeChannel->where('Status', 1)->where('Name', $typeChannel)->get()->first();
+                return $record->Id;
+            } else {
+                $this->typeChannel->Name = $typeChannel;
+                $this->typeChannel->ChannelsId = $idChannel;
+                $this->typeChannel->Status = 1;
+                $this->typeChannel->save();
+                return $this->typeChannel->Id;
+            }
         } catch (QueryException $e) {
             throw new TypesChannelsException('CANALES_ERR STORE SYSTEM', 500);
         }

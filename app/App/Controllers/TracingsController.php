@@ -78,8 +78,8 @@ class TracingsController extends BaseController
     {
         try {
             ($type == 1) ? 
-                    $this->tracing->Observation = "Se ha registrado automaticamente desde la plataforma CRM" :
-                    $this->tracing->Observation = "Se ha registrado automaticamente desde formulario externo";
+                    $this->tracing->Observation = "Se ha registrado automaticamente desde formulario externo":
+                    $this->tracing->Observation = "Se ha registrado automaticamente desde la plataforma CRM" ;
             $this->tracing->TypesObservationsId = $array["TypesObservationsId"];
             $this->tracing->ContactsId = $array["ContactsId"];
             $this->tracing->TypesChannelsId = $array["TypesChannelsId"];

@@ -80,11 +80,17 @@ $app->group('/api/v1', function () use ($app) {
         $app->put('/{id}', '\App\Controllers\TasksController:update');
         $app->patch('/{id}', '\App\Controllers\TasksController:delete');
         $app->delete('/{id}', '\App\Controllers\TasksController:destroy');
+        //
+        $app->get('/task/reminder', '\App\Controllers\TasksController:reminder');
     });
     // MAILS //
     $app->group('/mail', function () use ($app) {
         $app->post('', '\App\Controllers\MailerController:mail');
     });
+
+    // -- NATIVA -- //
+    // USERS //
+    $app->get('/users', '\App\Controllers\Nativa\UsersController:index');
 })->add(new KeyMiddleware());
 
 // DATA //

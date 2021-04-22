@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use App\Models\Task;
 use App\Services\TasksServices;
+use DateTimeZone;
 use Exceptions\TasksException;
 class TasksController extends BaseController
 {
@@ -21,7 +22,7 @@ class TasksController extends BaseController
     public function index(Request $request, Response $response, array $args) :Response
     {
         try {
-            return $this->response($this->task->with('tracings')->where('Status', '<>', 0)->get(), 200, $response);
+            return $this->response($this->task->with('tracings')->where('Status', '<>', 0)->where('User', $request->getHeaderLine('User'))->get(), 200, $response);
         } catch (QueryException $e) {
             throw new TasksException('TAREAS_ERR INDEX', 500);
         }
@@ -36,7 +37,8 @@ class TasksController extends BaseController
                 'Description' =>  v::notEmpty()->stringType()->length(1, 45),
                 'Status'      =>  v::notEmpty()->intType()->length(1, 1),
                 'contactsId'  =>  v::notEmpty()->intType(),
-                "TypesTasksId" => v::notEmpty()->intType()
+                "TypesTasksId" => v::notEmpty()->intType(),
+                "User"        =>  v::optional(v::notEmpty()->email())
             ])) {
                 throw new TasksException('Request enviado incorrecto', 400);
             }
@@ -48,6 +50,7 @@ class TasksController extends BaseController
             $this->task->TracingsId = $idTracings->Id;
             $this->task->TypesTasksId = $post['TypesTasksId'];
             $this->task->DeadLine = Carbon::parse($post['DeadLine']);
+            $this->task->User = $post['User'];
             $responseInsert = $this->task->save();
 
             if (!$responseInsert) {
@@ -103,6 +106,7 @@ class TasksController extends BaseController
             $record->TracingsId = (!empty($post['TracingsId'])) ? $post['TracingsId'] : (int) $record->TracingsId;
             $record->TypesTasksId = (!empty($post['TypesTasksId'])) ? $post['TypesTasksId'] : (int) $record->TypesTasksId;
             $record->DeadLine = (!empty($post['DeadLine'])) ? $post['DeadLine'] : $record->DeadLine;
+            $record->User = $post['User'];
             $record->updated_at = Carbon::now('America/Bogota');
             $responseUpdate = $record->save();
 
@@ -164,6 +168,20 @@ class TasksController extends BaseController
         } catch (QueryException $e) {
             throw new TasksException('TAREAS_ERR DESTROY', 500);
         }
+    }
+
+    public function reminder(Request $request, Response $response, array $args): Response
+    {
+        $now = Carbon::now('America/Bogota')->format('Y-m-d');
+        $records = $this->task::all();
+        $defeated = [];
+        foreach ($records as $value) {
+            if ($now > $value->DeadLine) {
+                array_push($defeated, 'Por favor soluciona la tarea ' . $value->Id);
+            }
+        }
+        return $this->response($defeated, 200, $response);
+        
     }
 
     public function __destruct()
