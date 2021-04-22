@@ -39,7 +39,6 @@ class ContactsController extends BaseController
                 'Cellphone' => v::notEmpty()->stringType()->length(1, 15),
                 'Email'     => v::notEmpty()->email()->length(1, 125),
                 'Petition'  => v::notEmpty()->stringType(),
-                'User'      => v::optional(v::notEmpty()->email()->length(1, 125)),
                 'Status'    => v::notEmpty()->intType()->length(1, 1)
             ])) {
                 throw new ContactsException('Request enviado incorrecto', 400);
