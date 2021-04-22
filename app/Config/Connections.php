@@ -26,10 +26,10 @@ abstract class Connections extends DataBase
 
         $this->connection->addConnection([
             'driver'    => 'sqlsrv',
-            'host'      => '54.166.100.176,1845',
-            'database'  => 'RefosusPruebas',
-            'username'  => 'refosus',
-            'password'  => 'SAsusweb02**',
+            'host'      => self::dataBaseNativa()["DATABASE_NATIVA_SERVER"],
+            'database'  => self::dataBaseNativa()["DATABASE_NATIVA_DB"],
+            'username'  => self::dataBaseNativa()["DATABASE_NATIVA_USER"],
+            'password'  => self::dataBaseNativa()["DATABASE_NATIVA_PASS"],
             'charset'   => 'utf8',
             'collation' => 'utf8_unicode_ci'
         ], 'refosus');
