@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use App\Models\Task;
 use App\Services\TasksServices;
+use DateTimeZone;
 use Exceptions\TasksException;
 class TasksController extends BaseController
 {
@@ -167,6 +168,20 @@ class TasksController extends BaseController
         } catch (QueryException $e) {
             throw new TasksException('TAREAS_ERR DESTROY', 500);
         }
+    }
+
+    public function reminder(Request $request, Response $response, array $args): Response
+    {
+        $now = Carbon::now('America/Bogota')->format('Y-m-d');
+        $records = $this->task::all();
+        $defeated = [];
+        foreach ($records as $value) {
+            if ($now > $value->DeadLine) {
+                array_push($defeated, 'Por favor soluciona la tarea ' . $value->Id);
+            }
+        }
+        return $this->response($defeated, 200, $response);
+        
     }
 
     public function __destruct()
