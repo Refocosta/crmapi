@@ -52,7 +52,7 @@ class ContactsController extends BaseController
             $this->contact->Cellphone = $post['Cellphone'];
             $this->contact->Email = $post['Email'];
             $this->contact->Petition = $post['Petition'];
-            $this->contact->User = (!empty($post['User'])) ? $post['User'] : 'cristianv@refocosta.com';
+            $this->contact->User = (!empty($post['User'])) ? $post['User'] : 'crm@refocosta.com';
             $this->contact->Status = $post['Status'];
             $responseInsert  = $this->contact->save();
             if (!$responseInsert) {
@@ -79,7 +79,7 @@ class ContactsController extends BaseController
                 "ContactsId" => $this->contact->Id,
                 "TypesChannelsId" => (empty($post['TypeChannelId'])) ? $idChannel : $post['TypeChannelId'][0],
                 "UsersId" => 1
-            ], $post['Type']);
+            ], null, $post['Type']);
 
             return $this->response([
                 "Id"   => $this->contact->Id,
@@ -135,6 +135,15 @@ class ContactsController extends BaseController
             
             if ($record === null) {
                 throw new ContactsException('El registro no existe', 404);
+            }
+
+            if ($post['User'] != $record->User) {
+                $this->service->storeContactInTracing([
+                    "TypesObservationsId" => 1,
+                    "ContactsId" => $record->Id,
+                    "TypesChannelsId" => 1,
+                    "UsersId" => 1
+                ], "El contacto ha cambiado de responsable a " . $post['User'], 2);
             }
 
             $record->Name = $post['Name'];
