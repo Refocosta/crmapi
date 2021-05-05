@@ -74,12 +74,15 @@ class TracingsController extends BaseController
         }
     }
 
-    public function storeFromSystem(array $array, int $type)
+    public function storeFromSystem(array $array, ?string $message, int $type)
     {
         try {
             ($type == 1) ? 
                     $this->tracing->Observation = "Se ha registrado automaticamente desde formulario externo":
                     $this->tracing->Observation = "Se ha registrado automaticamente desde la plataforma CRM" ;
+            if ($message != null) {
+                $this->tracing->Observation .= ", " . $message;
+            }
             $this->tracing->TypesObservationsId = $array["TypesObservationsId"];
             $this->tracing->ContactsId = $array["ContactsId"];
             $this->tracing->TypesChannelsId = $array["TypesChannelsId"];

@@ -73,9 +73,9 @@ class ContactsServices
         return $idTypeChannel;
     }
 
-    public function storeContactInTracing(array $array, int $type)
+    public function storeContactInTracing(array $array, ?string $message,int $type)
     {
-        $this->tracingController->storeFromSystem($array, $type);
+        $this->tracingController->storeFromSystem($array, $message, $type);
     }
 
     public function deleteTracingsWhenContactDeleted(Contact $contact)
