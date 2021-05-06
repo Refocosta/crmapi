@@ -57,6 +57,12 @@ class TasksController extends BaseController
                 throw new TasksException('Ha ocurrido un error', 500);
             }
 
+            $this->service->sendEmailNotification([
+                "Subject" => "Registro de tarea",
+                "Body" => "Se ha registrado la tarea <strong>" . $this->task->Id . "</strong>",
+                "Address" => $this->task->User
+            ]);
+
             return $this->response([
                 "Id" => $this->task->Id,
                 "Description" => $this->task->Description,

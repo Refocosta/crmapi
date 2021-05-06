@@ -18,7 +18,7 @@ class TypesChannelsController extends BaseController
     public function index(Request $request, Response $response, array $args): Response
     {
         try {
-            return $this->response($this->typeChannel->where('Status', 1)->get(), 200, $response);
+            return $this->response($this->typeChannel->where('Status', 1)->where('id', '<>', 1)->get(), 200, $response);
         } catch (QueryException $e) {
             throw new TypesChannelsException('CANALES_ERR INDEX', 500);
         }
