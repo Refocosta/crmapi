@@ -179,7 +179,7 @@ class TasksController extends BaseController
     public function reminder(Request $request, Response $response, array $args): Response
     {
         $now = Carbon::now('America/Bogota')->format('Y-m-d');
-        $records = $this->task::all();
+        $records = $this->task->where('Status', 1)->get();
         $defeated = [];
         foreach ($records as $value) {
             if ($now > $value->DeadLine) {
