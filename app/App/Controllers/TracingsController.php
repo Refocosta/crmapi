@@ -58,6 +58,7 @@ class TracingsController extends BaseController
             $this->tracing->Status = 1;
             $this->tracing->Quotation = (!empty($post["Quotation"])) ? $post["Quotation"] : 0;
             $this->tracing->Price = empty(!$post["Price"]) ? $post["Price"] : 0;
+            $this->tracing->QuotationDate = (!empty($post["Quotation"])) ? Carbon::now('America/Bogota') : null;
             $responseStore = $this->tracing->save();
             
             if (!$responseStore) {
@@ -144,8 +145,10 @@ class TracingsController extends BaseController
             $record->Observation = (!empty($post['Observation'])) ? $post['Observation'] : $record->Observation;
             $record->Quotation = (!empty($post['Quotation'])) ? $post['Quotation'] : $record->Quotation;
             $record->Price = (!empty($post['Price'])) ? $post['Price'] : $record->Price;
+            $record->QuotationDate = (!empty($post['Quotation'])) ? Carbon::now('America/Bogota') : $record->QuotationDate;
             $record->Sale = (!empty($post['Sale'])) ? $post['Sale'] : $record->Sale;
             $record->Value = (!empty($post['Value'])) ? $post['Value'] : $record->Value;
+            $record->SaleDate = (!empty($post['Sale'])) ? Carbon::now('America/Bogota') : $record->SaleDate;
             $record->updated_at = Carbon::now('America/Bogota');
             $responseUpdate = $record->save();
 
