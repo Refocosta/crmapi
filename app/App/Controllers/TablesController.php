@@ -88,8 +88,10 @@ final class TablesController extends Base
                 $table->tinyInteger('Status');
                 $table->tinyInteger('Quotation')->nullable()->default(0);
                 $table->float('Price')->nullable()->default(0);
+                $table->timestamp('QuotationDate')->nullable();
                 $table->tinyInteger('Sale')->nullable()->default(0);
                 $table->float('Value')->nullable()->default(0);
+                $table->timestamp('SaleDate')->nullable();
                 $table->tinyInteger('Auto')->default(0);
                 $table->timestamps();
                 $table->foreign('TypesObservationsId')
